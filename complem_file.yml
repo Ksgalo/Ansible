@@ -5,8 +5,17 @@
   become: True
 
   tasks:
+         - name: Creates directorys
+           file:
+             path: $HOME/dir_complemento
+             state: directory
+             owner: "{{ ansible_user }}"
+             group: "{{ ansible_user }}"
+             mode: 075
          - name: copiar ficheros nuevos a los servidores
            copy: src=/home/icepdfviewer.zip dest=$HOME/dir_complemento
          - name: copiar flow nuevo a los servidores
-           copy: src=/home/20221123_0905.zip dest=$HOME/dir_complemento 
+           copy: src=/home/20221123_0905.zip dest=$HOME/dir_complemento
+
+
 
