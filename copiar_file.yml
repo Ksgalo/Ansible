@@ -1,0 +1,12 @@
+---
+- name: copiar complementos nuevos a los servidores
+  hosts: binapskey
+  remote_user: centos
+  become: True
+
+  tasks:
+         - name: copiar ficheros nuevos a los servidores
+           copy: src=/home/icepdfviewer.zip dest=$HOME/dir_complemento
+         - name: copiar flow nuevo a los servidores
+           copy: src=/home/20221123_0905.zip dest=$HOME/dir_complemento 
+
