@@ -1,6 +1,6 @@
 ---
 - name: copiar complementos nuevos a los servidores
-  hosts: binapskey
+  hosts: all
   remote_user: centos
   become: True
 
