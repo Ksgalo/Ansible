@@ -1,0 +1,49 @@
+---
+- name: mobile app service deployment
+  hosts: appmovil
+  vars:
+          file: binapsappws-1.4.3-SNAPSHOT.jar
+  tasks:
+          - name: Get Running Processes
+            shell: "ps -ef | grep -v grep | grep -w binapsappws | awk '{print $2}'"
+            register: running_processes
+
+          - name: Kill running processes
+            shell: "kill {{ item }}"
+            with_items: "{{ running_processes.stdout_lines }}"
+
+          - wait_for:
+                  path: "/proc/{{ item }}/status"
+                  state: absent
+            with_items: "{{ running_processes.stdout_lines }}"
+            ignore_errors: yes
+            register: killed_processes
+
+          - name: Force kill stuck processes
+            shell: "kill -9 {{ item }}"
+            with_items: "{{ killed_processes.results | select('failed') | map(attribute='item') | list }}"
+
+          - name: Delete old war file 
+            shell: "find {{ item }} | grep -E '([0-9][0-9][0-9][0-9][0-9])$' | xargs rm -f"
+            with_lines: cat rutas.txt
+
+          - name: Rename old war file -  ROLLBACK
+            shell: "find {{ item }}  -type f -name '*jar' -print0 | xargs --null -I{} mv {} {}_`date +%Y%m%d`.jar"
+            with_lines: cat rutas.txt
+
+          - name: Copy .war file to application servers
+            copy:
+                    src: /home/ubuntu/binapsappws-1.4.3-SNAPSHOT.jar
+                    dest: "{{ item }}"
+            with_lines: cat rutas.txt
+
+          - name: run war mobile app 
+            shell: "cd {{ item }} && /opt/binaps/jdk-11.0.2/bin/java -jar {{ item }}{{ file }}"
+            with_lines: cat rutas.txt
+
+          
+
+
+
+
+
