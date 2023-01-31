@@ -1,0 +1,14 @@
+---
+- name: Restore database
+  hosts: database-server
+  become: yes
+  tasks:
+  - name: Copiar el archivo de backup
+    copy:
+      src: /path/to/backup/file.sql
+      dest: /tmp/backup.sql
+
+  - name: Restore database
+    shell: mysql -u {{ mysql_user }} -p{{ mysql_password }} {{ mysql_database }} < /tmp/backup.sql
+    become: yes
+    become_user: root
