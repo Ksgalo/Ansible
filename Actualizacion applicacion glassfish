@@ -1,0 +1,19 @@
+- name: Automate Glassfish and MySQL update
+  hosts: glassfish_server
+  become: yes
+
+  tasks:
+  - name: Stop Glassfish domain
+    shell: asadmin stop-domain domain1
+
+  - name: Backup MySQL database
+    shell: mysqldump -u root -p{{ mysql_root_password }} database_name > database_name.sql
+
+  - name: Update MySQL database
+    shell: mysql -u root -p{{ mysql_root_password }} database_name < database_name.sql
+
+  - name: Update Glassfish application
+    shell: cp new_application.war /glassfish/domains/domain1/autodeploy/
+
+  - name: Start Glassfish domain
+    shell: asadmin start-domain domain1
