@@ -1,0 +1,25 @@
+---
+- name: Desplegar GLPI en Ubuntu
+  hosts: ubuntu
+  become: yes
+  tasks:
+  - name: Instalar Apache
+    apt: name=apache2 state=present
+  - name: Instalar PHP
+    apt: name=php state=present
+  - name: Instalar las extensiones necesarias de PHP
+    apt: name=php-gd state=present
+    apt: name=php-mbstring state=present
+    apt: name=php-xml state=present
+    apt: name=php-mysql state=present
+  - name: Descargar la última versión de GLPI
+    command: wget https://github.com/glpi-project/glpi/releases/download/9.5.2/glpi-9.5.2.tgz
+  - name: Descomprimir el archivo GLPI
+    command: tar -xzf glpi-9.5.2.tgz
+  - name: Mover el directorio GLPI a la raíz del servidor Apache
+    command: mv glpi /var/www/html/glpi
+  - name: Configurar los permisos necesarios para el directorio GLPI
+    command: chown -R www-data:www-data /var/www/html/glpi
+    command: chmod -R 775 /var/www/html/glpi
+  - name: Reiniciar Apache
+    service: name=apache2 state=restarted
