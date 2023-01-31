@@ -5,6 +5,11 @@
   tasks:
   - name: Stop Glassfish domain
     shell: asadmin stop-domain domain1
+    
+  - name: Agregar archivo .tar al directorio de la aplicación
+    unarchive:
+    src: /ruta/del/archivo.tar
+    dest: /ruta/del/directorio/de/la/aplicacion/
 
   - name: Backup MySQL database
     shell: mysqldump -u root -p{{ mysql_root_password }} database_name > database_name.sql
