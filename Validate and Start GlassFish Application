@@ -1,0 +1,18 @@
+---
+- name: Validate and Start GlassFish Application
+  hosts: glassfish_server
+  become: yes
+  tasks:
+  - name: Check the status of the GlassFish Application
+    shell: asadmin list-applications | grep "{{ app_name }}"
+    register: app_status
+    failed_when: "'{{ app_name }}' not found" in app_status.stdout
+
+  - name: Start GlassFish Application
+    shell: asadmin start-application {{ app_name }}
+    when: app_status.rc != 0
+
+  - name: Confirm the status of the GlassFish Application
+    shell: asadmin list-applications | grep "{{ app_name }}"
+    register: app_status
+    failed_when: "not running" in app_status.stdout
