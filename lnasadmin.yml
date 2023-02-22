@@ -1,0 +1,11 @@
+---
+- name: Crear enlace simbólico para asadmin
+  hosts: binapskey
+  become: true
+  tasks:
+    - name: Crear enlace simbólico
+      file:
+        src: /opt/binaps/glassfish2/bin/asadmin
+        dest: /bin/asadmin
+        state: link
+

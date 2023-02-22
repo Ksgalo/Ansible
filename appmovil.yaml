@@ -1,0 +1,24 @@
+---
+- name: Eliminar servicio y copiar archivo
+  hosts: appmovil
+  tasks:
+    - name: Verificar si el proceso está en ejecución
+      shell: ps aux | grep binapsappws-1.4.1-SNAPSHOT.jar | grep -v grep | awk '{print $2}'
+      register: proceso
+
+    - name: Eliminar proceso
+      shell: kill -9 {{ proceso.stdout }}
+      when: proceso.stdout != ""      
+
+    - name: Copiar archivo a varios directorios
+      command: /opt/binaps/jdk-12/bin/java -ja "{{item}}"/binapsappws-1.4.6-ALPHA.jar &
+      with_items:
+        - /opt/binaps/microservicios/exito_qa_alterno/appsyntofarmaqa
+        - /opt/binaps/microservicios/exito_qa_alterno/appsierraqa
+        - /opt/binaps/microservicios/exito_qa_alterno/appproquident
+        - /opt/binaps/microservicios/exito_qa_alterno/appmovilmayaguez
+        - /opt/binaps/microservicios/exito_qa_alterno/appiscqa
+        - /opt/binaps/microservicios/exito_qa_alterno/appcommerkqa
+        - /opt/binaps/microservicios/exito_qa_alterno/appcliverqa
+        - /opt/binaps/microservicios/exito_qa_alterno/appbiolabqa
+

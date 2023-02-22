@@ -1,0 +1,8 @@
+---
+- name: Deploy and configure app war
+  become: "{{ use_sudo|default(True) }}"
+  gather_facts: True
+  roles:
+    - col45
+    - col31
+    - col33  

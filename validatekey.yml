@@ -1,0 +1,26 @@
+---
+- name: Transfer authorized_keys file to servers
+  hosts: binapskey
+
+  tasks:
+    - name: Check if authorized_keys file exists
+      stat:
+        path: "/home/centos/.ssh/authorized_keys"
+      register: auth_keys_exist
+
+    - name: Save server name to log filet exist
+      when: not auth_keys_exist.stat.exists
+      lineinfile:
+        path: /var/log/missing_auth_keys.log
+        line: "{{ inventory_hostname }}"
+
+    - name: Copy authorized_keys file to server
+      copy:
+        src: "/home/ubuntu/authorized_keys"
+        dest: "/home/centos/.ssh/authorized_keys"
+      when: not auth_keys_exist.stat.exists
+      become: true 
+      become_user: centos
+      become_method: sudo
+      
+

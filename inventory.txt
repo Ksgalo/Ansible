@@ -1,0 +1,10 @@
+[validate-server]
+col[30:38].binaps.cloud 
+col[40:48].binaps.cloud 
+
+
+[validate-server:vars]
+ansible_become=True
+ansible_become_method=su
+ansible_become_user=root
+ansible_become_password_file=/home/ansible/paswdr.txt
